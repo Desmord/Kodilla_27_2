@@ -1,43 +1,44 @@
 const express = require('express');
 const path = require('path');
+const hbs = require('express-handlebars');
 
 const PORT = 8080;
 
 const app = express();
 
 
-app.use((req, res, next) => {
-    res.show = (name) => {
-        res.sendFile(path.join(__dirname, `/public/${name}`));
-    };
-    next();
-});
-
 app.use(express.static(path.join(__dirname, '/public')));
 
+app.engine('.hbs', hbs());
+app.set("views", __dirname + "/public/views")
+app.set('view engine', '.hbs');
 
 app.get('/', (req, res) => {
-    res.show('views/index.html');
+    res.render('index');
 });
 
 app.get('/home', (req, res) => {
-    res.show('views/index.html');
+    res.render('index');
 });
 
 app.get('/about', (req, res) => {
-    res.show('views/about.html');
+    res.render('about', { layout: `dark` });
 });
 
 app.get('/user/settings', (req, res) => {
-    res.show('views/logIn.html');
+    res.render('logIn');
 });
 
 app.get('/user/panel', (req, res) => {
-    res.show('views/logIn.html');
+    res.render('logIn');
+});
+
+app.get('/hello/:name', (req, res) => {
+    res.render('hello', { name: req.params.name });
 });
 
 app.use((req, res) => {
-    res.show('views/pageNotFound.html');
+    res.render('pageNotFound');
 })
 
 app.listen(PORT, () => {
